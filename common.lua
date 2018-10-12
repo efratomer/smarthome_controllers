@@ -13,7 +13,7 @@ function mqtt_connected(client)
         prnt("offline")
         dofile("init.lua")
     end)
-    
+
     m:on("message", function(client, topic, data)
         local data_json
         prnt("mqtt topic RX: "..topic)
@@ -35,7 +35,7 @@ function mqtt_connected(client)
 
     m:subscribe(__mqtt_base_topic.."/param_set", MQTT_QOS_EXACLY_ONCE)
     m:subscribe(__mqtt_base_topic.."/reboot", MQTT_QOS_EXACLY_ONCE)
-    
+
     __mqtt_on_connected(client)
 end
 
@@ -43,7 +43,7 @@ function mqtt_connect(on_connected_callback, on_message_callback, base_topic)
     __mqtt_on_connected = on_connected_callback
     __mqtt_on_message = on_message_callback
     __mqtt_base_topic = base_topic
-    
+
     m:connect("10.0.0.20", 1883, 0, mqtt_connected,
     function(client, reason)
         prnt("MQTT connection failed, reason: " .. reason)
@@ -67,7 +67,7 @@ end
 
 function param_get(name)
     local res
-    
+
     if file.open(PARAM_FILENAME_PREFIX..name, "r") then
         res = file.readline()
         file.close()

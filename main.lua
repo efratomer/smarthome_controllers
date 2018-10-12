@@ -57,7 +57,7 @@ function sendData(hitCount)
 end
 
 function mqtt_on_message(client, topic, data)
-    
+
 end
 
 function mqtt_on_connect(client)
