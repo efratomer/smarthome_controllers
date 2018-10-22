@@ -1,3 +1,5 @@
+DEBUG = false
+
 -- MQTT --
 MQTT_RETAIN = 1
 MQTT_NO_RETAIN = 0
@@ -8,7 +10,7 @@ __mqtt_base_topic = ""
 __mqtt_on_connected = nil
 __mqtt_on_message = nil
 
-function mqtt_connected(client)
+function _mqtt_connected(client)
     m:on("offline", function(client)
         prnt("offline")
         dofile("init.lua")
@@ -40,11 +42,18 @@ function mqtt_connected(client)
 end
 
 function mqtt_connect(on_connected_callback, on_message_callback, base_topic)
+    local mqtt_ip = param_get("mqtt_ip")
+
     __mqtt_on_connected = on_connected_callback
     __mqtt_on_message = on_message_callback
     __mqtt_base_topic = base_topic
 
-    m:connect("10.0.0.20", 1883, 0, mqtt_connected,
+    if (mqtt_ip == nil) then
+        print("MQTT ip is missing... aborting")
+        do return end
+    end
+
+    m:connect(mqtt_ip, 1883, 0, _mqtt_connected,
     function(client, reason)
         prnt("MQTT connection failed, reason: " .. reason)
         dofile("init.lua")
@@ -61,7 +70,7 @@ function param_set(name, value)
         file.writeline(tostring(value))
         --file.close() # Seems like causing crash for some reason
     else
-        prnt("Error opening data_"..name)
+        prnt("Error opening "..PARAM_FILENAME_PREFIX..name)
     end
 end
 
@@ -72,7 +81,7 @@ function param_get(name)
         res = file.readline()
         file.close()
     else
-        prnt("Error opening data/"..name)
+        prnt("Error opening "..PARAM_FILENAME_PREFIX..name)
     end
 
     return res
