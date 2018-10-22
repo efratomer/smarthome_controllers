@@ -5,6 +5,8 @@
   * The following MQTT topics are reserved for internal use:
     * "<BASE_TOPIC>/param_set"
     * "<BASE_TOPIC>/reboot"
+  * The following preserved data should exist before first use:
+    * mqtt_ip - The MQTT broker IP
   
 ### Features:
   * Allow persistence mechanism to save parameters data.
