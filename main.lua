@@ -10,7 +10,6 @@ STATUS_TOPIC = MQTT_BASE_TOPIC.."/console"
 
 LightStatus = -1
 gpio.mode(BUILTIN_LED, gpio.OUTPUT)
-m = mqtt.Client("water_heater_control", 120)
 
 function sendStatus(status)
   print(status)
@@ -66,4 +65,4 @@ function mqtt_on_connect(client)
   tmr.alarm(0, 1000, 1, function() sendData(0) end )
 end
 
-mqtt_connect(mqtt_on_connect, mqtt_on_message, MQTT_BASE_TOPIC)
+m = mqtt_connect("livingroom_ac_control", mqtt_on_connect, mqtt_on_message, MQTT_BASE_TOPIC)

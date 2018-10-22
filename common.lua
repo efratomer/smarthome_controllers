@@ -41,7 +41,7 @@ function _mqtt_connected(client)
     __mqtt_on_connected(client)
 end
 
-function mqtt_connect(on_connected_callback, on_message_callback, base_topic)
+function mqtt_connect(client_name, on_connected_callback, on_message_callback, base_topic)
     local mqtt_ip = param_get("mqtt_ip")
 
     __mqtt_on_connected = on_connected_callback
@@ -53,11 +53,14 @@ function mqtt_connect(on_connected_callback, on_message_callback, base_topic)
         do return end
     end
 
+    m = mqtt.Client(client_name, 120)
     m:connect(mqtt_ip, 1883, 0, _mqtt_connected,
     function(client, reason)
         prnt("MQTT connection failed, reason: " .. reason)
         dofile("init.lua")
     end)
+
+    return m
 end
 
 -- CONSISTENT PARAMETERS --
