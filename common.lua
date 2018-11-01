@@ -99,3 +99,49 @@ function prntd(text)
         prnt(text)
     end
 end
+
+-- GPIOs --
+_gpios = {}
+_gpios_timer = {}
+_gpios_data = {}
+_gpios_pending_data = {}
+function gpio_register(name, on_value_change)
+    if _gpios[name] ~= nil then
+        return nil
+    end
+
+    _gpios[name] = on_value_change
+    _gpios_timer[name] = tmr.create()
+    return true
+end
+
+function gpio_update(name, value)
+    if _gpios[name] == nil then
+        return nil
+    end
+
+    _gpios_data[name] = value
+    _gpios[name](value)
+end
+
+function gpio_get(name)
+    return  _gpios_data[name]
+end
+
+--Updates value only if stayed unchanged at least delay_time(ms)
+function gpio_delayUpdate(name, value, delay_time)
+    if _gpios[name] == nil or _gpios_pending_data[name] == value then
+        return nil
+    end
+
+    _gpios_pending_data[name] = value
+
+    if gpio_get(name) == value then
+        tmr.stop(_gpios_timer[name])
+        return nil
+    end
+
+    tmr.alarm(_gpios_timer[name], delay_time, tmr.ALARM_SINGLE, function()
+        gpio_update(name, value)
+    end)
+end
