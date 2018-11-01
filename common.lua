@@ -101,27 +101,27 @@ function prntd(text)
 end
 
 -- GPIOs --
-_gpios = {}
+_gpios_cb = {}
 _gpios_timer = {}
 _gpios_data = {}
 _gpios_pending_data = {}
 function gpio_register(name, on_value_change)
-    if _gpios[name] ~= nil then
+    if _gpios_cb[name] ~= nil then
         return nil
     end
 
-    _gpios[name] = on_value_change
+    _gpios_cb[name] = on_value_change
     _gpios_timer[name] = tmr.create()
     return true
 end
 
 function gpio_update(name, value)
-    if _gpios[name] == nil then
+    if _gpios_cb[name] == nil then
         return nil
     end
 
     _gpios_data[name] = value
-    _gpios[name](value)
+    _gpios_cb[name](value)
 end
 
 function gpio_get(name)
@@ -130,7 +130,7 @@ end
 
 --Updates value only if stayed unchanged at least delay_time(ms)
 function gpio_delayUpdate(name, value, delay_time)
-    if _gpios[name] == nil or _gpios_pending_data[name] == value then
+    if _gpios_cb[name] == nil or _gpios_pending_data[name] == value then
         return nil
     end
 
