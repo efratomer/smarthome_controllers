@@ -24,7 +24,6 @@ function _mqtt_connected(client)
             prnt("PARAM SET "..data)
             data_json = sjson.decode(data)
             for k,v in pairs(data_json) do
-                print(k,v)
                 param_set(k, v)
             end
         elseif (topic == __mqtt_base_topic.."/reboot") then
